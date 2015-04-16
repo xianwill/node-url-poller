@@ -1,18 +1,18 @@
 var test = require('tape');
 var http = require('http');
 var url = require('url');
-var UriPoller = require('../index');
+var Poller = require('../index');
 
-test('polling uri', function(t) {
+test('polling url', function(t) {
   t.plan(7);
   var pollCount = 0;
   // create a test server that just returns the message value sent in the query string.
   var server = http.createServer(function(req, res) {
-    res.statusCode =200;
+    res.statusCode = 200;
     res.end(url.parse(req.url, true).query.message);
   });
   server.listen(6660);
-  var poller = new UriPoller({
+  var poller = new Poller({
     url: 'http://localhost:6660',
     query: { 'message': 'hello' },
     interval: 1000
