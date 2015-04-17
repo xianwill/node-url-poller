@@ -1,1 +1,1 @@
-url-poller poll http://download.finance.yahoo.com/d/quotes.csv?s=GOOG&f=snl 5000
+url-poller poll -u "http://download.finance.yahoo.com/d/quotes.csv?s=GOOG&f=snl" -i 5000
