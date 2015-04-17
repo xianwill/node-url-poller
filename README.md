@@ -1,30 +1,34 @@
 # url-poller - simple endpoint polling.
 
-### Poll a URL every so often
+### Implements a readable stream that polls a URL every so often
 
     var options = {
       url: 'http://example.com',
       query: { foo: "bar" },
       interval: 5000 // default is 60000
     };
+
     var poller = require('url-poller')(options);
-    poller.on('data', function(data) {
-      console.log(data);
-    });
-    poller.start();
+    poller.pipe(process.stdout);
 
 ### When you've had enough, call
 
-    poller.stop()
+    poller.stop();
 
-### Events
-
-    poller.on('data', function(data) { /* store the data you're collecting */ });
-
-    poller.on('end', function() { /* tidy up */ });
-
-    poller.on('error', function(err) { /* handle errors */ });
-
-### Install globally and invoke the binary
+### You can also install globally and invoke the binary
 
     url-poller poll --url http://example.com?123 --interval 5000
+
+### Options
+
+    usage: url-poller [action] [options]
+
+    actions:
+      poll
+
+    options:
+      -u, --url         URL         The URL to poll
+      -i, --interval    INTERVAL    The INTERVAL to poll on
+      -c, --configFile  CONFIGFILE  A configFile that specifies query and interval
+      -o, --out         OUT         An output file to write to in case you don't want to just pipe
+      -e, --err         ERR         An error file to write to
