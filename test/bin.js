@@ -30,7 +30,7 @@ test('poll url at interval and log output to stdout', function (t) {
   t.plan(2);
   var server = launchServer();
   var ps = spawn(cmd, ['poll', '--url', 'http://localhost:6660?message=' + responses.message, '--interval', 1000]);
-  collectStdIO(ps, assertStdOut.bind(null, t, server));
+  collectStdIO(t, ps, processOut.bind(null, t, server));
 });
 
 test('poll using settings from config file', function (t) {
@@ -41,37 +41,39 @@ test('poll using settings from config file', function (t) {
     "interval": 1000
   }));
   var ps = spawn(cmd, ['poll', '--configFile', files.conf]);
-  collectStdIO(ps, assertStdOut.bind(null, t, server));
+  collectStdIO(t, ps, processOut.bind(null, t, server));
 });
 
 test('poll and log err to stderr', function (t) {
   t.plan(2);
   var server = launchBustedServer();
   var ps = spawn(cmd, ['poll', '--url', 'http://localhost:6660?message=' + responses.message, '--interval', 1000]);
-  collectStdIO(ps, assertStdErr.bind(null, t, server));
+  collectStdIO(t, ps, processErr.bind(null, t, server));
 });
 
-test.skip('poll and append data to --out', function (t) {
+test('poll and append data to --out', function (t) {
   t.plan(2);
+  t.timeoutAfter(4000);
   var server = launchServer();
-  var ps = spawn(cmd, ['poll', '--url', 'http://localhost:6660?message='+responses.message, '--interval', 1000, '--out', files.out]);
-  collectFiles(ps, assertStdOut.bind(null, t, server));
+  var ps = spawn(cmd, ['poll', '--url', 'http://localhost:6660?message='+responses.message, '--interval', 1000, '--out', files.out, '--err', files.err]);
+  collectFile(t, ps, processOut.bind(null, t, server));
 });
 
-test.skip('poll and append errors to --err', function (t) {
+test('poll and append errors to --err', function (t) {
   t.plan(2);
+  t.timeoutAfter(4000);
   var server = launchBustedServer();
   var ps = spawn(cmd, ['poll', '--url', 'http://localhost:6660?message='+responses.message, '--interval', 1000, '--out', files.out, '--err', files.err]);
-  collectFiles(ps, assertStdErr.bind(null, t, server));
+  collectFile(t, ps, processErr.bind(null, t, server));
 });
 
-function assertStdOut(t, server, out, err) {
+function processOut(t, server, out, err) {
   server.close();
   t.equal(err, '', 'no error');
   t.equal(out, expected.out, 'data collected');
 }
 
-function assertStdErr(t, server, out, err) {
+function processErr(t, server, out, err) {
   server.close();
   t.equal(out, '', 'no data');
   t.ok(/Response Error/.test(err), 'errors collected');
@@ -96,7 +98,7 @@ function launchBustedServer () {
   return server;
 }
 
-function collectStdIO (ps, cb) {
+function collectStdIO (t, ps, cb) {
   var count = 0;
   var out = [];
   var err = [];
@@ -113,14 +115,26 @@ function collectStdIO (ps, cb) {
   ps.on('close', function (code) {
     cb(Buffer.concat(out).toString('utf8'), Buffer.concat(err).toString('utf8'));
   });
+}
+
+function collectFile(t, ps, cb) {
+  var count = 0;
+  var out = [];
+  var err = [];
+  setTimeout(function () {
+    ps.kill();
+    cb(fs.readFileSync(files.out, 'utf8'), fs.readFileSync(files.err, 'utf8'));
+  }, 3500);
 
   /*
-  ps.on('error', function (err) {
-    cb(err);
+  t.comment('watching ' + tmpdir);
+  var watcher = fs.watch(tmpdir, function (event, filename) {
+    t.comment('watch event on ' + filename);
+    if (++count === 3) {
+      watcher.close();
+      ps.kill();
+      cb(fs.readFileSync(files.out), fs.readFileSync(files.err));
+    }
   });
   */
-
-  function collectFiles(ps, cb) {
-
-  }
 }

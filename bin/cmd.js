@@ -14,7 +14,7 @@ function start (options) {
   var poller = new Poller(options);
   poller.on('error', function(err) {
     errstream.write(err.toString());
-  });  
+  });
   poller.pipe(outstream);
 }
 
@@ -29,7 +29,12 @@ function getOptions () {
     if (option === undefined) return usage();
     if (option === 'help') return usage(0);
     if (option === 'configFile') return loadConfigFile(options[i + 1]);
-    config[option] = options[i + 1];
+    if (option === 'out')
+      outstream = fs.createWriteStream(options[i + 1]);
+    else if(option === 'err')
+      errstream = fs.createWriteStream(options[i + 1]);
+    else
+      config[option] = options[i + 1];
   }
   return config;
 }
@@ -71,6 +76,8 @@ var help = [
   '  -u, --url          URL               Poll the given URL',
   '  -i, --interval     INTERVAL          Poll every INTERVAL milliseconds',
   '  -c, --configFile   CONFIGFILE        Use the settings in the given CONFIGFILE instead of args',
+  '  -o, --out          OUT               An output file to append to',
+  '  -e, --err          ERR               An error file to append to ',
   '  -h, --help                           ',
   '',
   '[CONFIGFILE]',
@@ -91,6 +98,8 @@ var argvOptions = {
   'url':          'u',
   'interval':     'i',
   'configFile':   'c',
+  'out':          'o',
+  'err':          'e',
   'help':         'h'
 };
 
