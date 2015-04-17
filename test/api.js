@@ -17,8 +17,9 @@ test('polling url', function(t) {
     query: { 'message': 'hello' },
     interval: 1000
   });
+  poller.setEncoding('utf8');
   poller.on('data', function(data){
-    t.ok(poller.isPolling, 'is polling after start');
+    t.ok(poller.isPolling(), 'is polling after start');
     pollCount = pollCount + 1;
     t.equal(data, 'hello', 'data should match server response');
     if(pollCount === 3) poller.stop();
@@ -27,8 +28,7 @@ test('polling url', function(t) {
     t.error(err);
   });
   poller.on('end', function() {
-    t.false(poller.isPolling, 'isn\'t polling after stopping');
+    t.false(poller.isPolling(), 'isn\'t polling after stopping');
     server.close();
   });
-  poller.start();
 });

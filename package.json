@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Simple http polling.",
   "main": "index.js",
-  "bin": "bin/cmd.js"
+  "bin": "bin/cmd.js",
   "scripts": {
     "test": "tape test/*.js"
   },
