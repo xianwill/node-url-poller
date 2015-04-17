@@ -19,7 +19,6 @@ Poller.prototype.stop = function () {
   if (!this.isPolling()) return;
   clearInterval(this.intervalId);
   this.intervalId = null;
-  this.emit('end');
   this.push(null);
 };
 
@@ -69,16 +68,15 @@ Poller.prototype._respond = function (res) {
   }
   else {
     // TODO: buffer while not reading
-    res.on('data', function (chunk) {
-      if (self.isPolling())
-        if (!self.push(chunk))
-          self.stop();
-    });
+    res.on('data', this._emitChunk.bind(this));
   }
 };
 
 Poller.prototype._emitChunk = function (chunk) {
-
+  if (!this.isPolling()) return;
+  if (!this.push(chunk)) {
+    this.stop();
+  }
 };
 
 Poller.prototype.isPolling = function() {

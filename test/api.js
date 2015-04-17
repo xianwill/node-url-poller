@@ -19,7 +19,7 @@ test('polling url', function(t) {
   });
   poller.setEncoding('utf8');
   poller.on('data', function(data){
-    t.ok(poller.isPolling(), 'is polling after start');
+    t.ok(poller.isPolling(), 'should report \'isPolling\' after start');
     pollCount = pollCount + 1;
     t.equal(data, 'hello', 'data should match server response');
     if(pollCount === 3) poller.stop();
@@ -28,7 +28,7 @@ test('polling url', function(t) {
     t.error(err);
   });
   poller.on('end', function() {
-    t.false(poller.isPolling(), 'isn\'t polling after stopping');
+    t.false(poller.isPolling(), 'shouldn\'t poll after stop');
     server.close();
   });
 });
