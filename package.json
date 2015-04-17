@@ -1,6 +1,6 @@
 {
   "name": "url-poller",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Simple http polling.",
   "main": "index.js",
   "bin": "bin/cmd.js",
