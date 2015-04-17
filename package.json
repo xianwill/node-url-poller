@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/xtianwill/uri-poller.git"
+    "url": "https://github.com/xtianwill/url-poller.git"
   },
   "keywords": [
     "polling",
@@ -20,9 +20,9 @@
   "author": "Christian Williams <xtianwill79@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/xtianwill/uri-poller/issues"
+    "url": "https://github.com/xtianwill/url-poller/issues"
   },
-  "homepage": "https://github.com/xtianwill/uri-poller",
+  "homepage": "https://github.com/xtianwill/url-poller",
   "dependencies": {
     "xtend": "^4.0.0"
   },
