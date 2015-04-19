@@ -67,12 +67,12 @@ Poller.prototype._respond = function (res) {
     });
   }
   else {
-    // TODO: buffer while not reading
     res.on('data', this._emitChunk.bind(this));
   }
 };
 
 Poller.prototype._emitChunk = function (chunk) {
+  // TODO: buffer while not reading
   if (!this.isPolling()) return;
   if (!this.push(chunk)) {
     this.stop();

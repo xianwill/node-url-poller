@@ -30,9 +30,9 @@ function getOptions () {
     if (option === 'help') return usage(0);
     if (option === 'configFile') return loadConfigFile(options[i + 1]);
     if (option === 'out')
-      outstream = fs.createWriteStream(options[i + 1]);
+      outstream = fs.createWriteStream(options[i + 1], { flags: 'a' });
     else if(option === 'err')
-      errstream = fs.createWriteStream(options[i + 1]);
+      errstream = fs.createWriteStream(options[i + 1], { flags: 'a' });
     else
       config[option] = options[i + 1];
   }
